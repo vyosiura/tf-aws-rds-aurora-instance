@@ -9,8 +9,8 @@ locals {
 
 resource "aws_db_parameter_group" "aurora" {
   count                                         = var.db_parameter_group_name == null ? 0 : 1
-  name                                          = lower("${var.db_parameter_group_name}-${var.instance_scope}-pg")
-  description                                   = "Parameter group for ${var.cluster_identifier}-${var.instance_scope}" 
+  name                                          = lower("${var.db_parameter_group_name}-pg")
+  description                                   = "Parameter group for ${var.cluster_identifier}" 
   family                                        = var.parameter_group_family
   dynamic "parameter" {
     for_each  = var.parameters
@@ -35,7 +35,7 @@ resource "random_id" "instance" {
 resource "aws_rds_cluster_instance" "aurora" {
     count                                       = var.instance_count
     
-    identifier                                  = lower("${var.cluster_identifier}-${var.instance_scope}-${random_id.instance[count.index].hex}")
+    identifier                                  = lower("${var.cluster_identifier}-${random_id.instance[count.index].hex}")
     cluster_identifier                          = var.cluster_identifier
     engine                                      = var.engine
     engine_version                              = var.engine_version
@@ -66,7 +66,7 @@ resource "aws_rds_cluster_instance" "aurora" {
 
 resource "aws_rds_cluster_endpoint" "aurora" {
   cluster_identifier            = var.cluster_identifier
-  cluster_endpoint_identifier   = lower("${var.cluster_identifier}-${var.instance_scope}-ro")
+  cluster_endpoint_identifier   = lower("${var.cluster_identifier}-ro")
   custom_endpoint_type          = "READER"
   static_members                = aws_rds_cluster_instance.aurora.*.id
   depends_on = [
@@ -75,14 +75,14 @@ resource "aws_rds_cluster_endpoint" "aurora" {
 }
 
 
-resource "aws_route53_record" "aurora" {
-  count                                     = var.zone_id == null ? 0 :1
-  zone_id                                   = var.zone_id 
-  name                                      = lower("db-${var.cluster_identifier}-${var.instance_scope}-ro")
-  type                                      = "CNAME"
-  ttl                                       = var.record_ttl
-  records                                   = [ aws_rds_cluster_endpoint.aurora.endpoint ]
-  depends_on = [
-    aws_rds_cluster_endpoint.aurora
-  ]
-}
+# resource "aws_route53_record" "aurora" {
+#   count                                     = var.zone_id == null ? 0 :1
+#   zone_id                                   = var.zone_id 
+#   name                                      = lower("db-${var.cluster_identifier}-ro")
+#   type                                      = "CNAME"
+#   ttl                                       = var.record_ttl
+#   records                                   = [ aws_rds_cluster_endpoint.aurora.endpoint ]
+#   depends_on = [
+#     aws_rds_cluster_endpoint.aurora
+#   ]
+# }

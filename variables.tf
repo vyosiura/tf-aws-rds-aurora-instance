@@ -1,29 +1,29 @@
-variable "record_name" {
-  description = "Registro de DNS que será criado"
-  type        = string
-  default     = null
-}
+# variable "record_name" {
+#   description = "Registro de DNS que será criado"
+#   type        = string
+#   default     = null
+# }
 
-variable "record_type" {
-  description = "Tipo do registro que será criado."
-  type        = string
-  default     = "CNAME"
-}
+# variable "record_type" {
+#   description = "Tipo do registro que será criado."
+#   type        = string
+#   default     = "CNAME"
+# }
 
-variable "zone_id" {
-  description = "Id da zona do Route53 que serão criados o registro DNS do cluster endpoint se este argumento for preenchido. Default do nome do registro será: cluster-identifier-instance-scope-ro"
-  type        = string
-  default     = null
-}
+# variable "zone_id" {
+#   description = "Id da zona do Route53 que serão criados o registro DNS do cluster endpoint se este argumento for preenchido. Default do nome do registro será: cluster-identifier-instance-scope-ro"
+#   type        = string
+#   default     = null
+# }
 
-variable "record_ttl" {
-  description = "TTL do registro DNS"
-  type        = number
-  default     = 300
-}
+# variable "record_ttl" {
+#   description = "TTL do registro DNS"
+#   type        = number
+#   default     = 300
+# }
 
 variable "parameters" {
-  description = "Lista de maps com os valores dos parametros que devem ser criados"
+  description = "Lista de maps com os valores dos parametros do parameter group que devem ser criados"
   type        = list(object({
     name          = string
     value         = string
@@ -35,23 +35,24 @@ variable "parameters" {
 variable "cluster_identifier" {
   description = "Nome do cluster que a instância pertence"
   type        = string
-  default     = null
+  validation {
+    condition     = var.cluster_identifier != null && var.cluster_identifier != ""
+    error_message = "Please specify the required variable cluster_identifier."
+  }
 }
 
 variable "engine" {
   description = "Engine utilizada pelo Aurora. Possíveis valores: `aurora`, `aurora-mysql` e `aurora-postgresql`"
   type        = string
-  default     = null
   validation {
     condition     = var.engine != null && (var.engine == "aurora-mysql" || var.engine == "aurora" || var.engine == "aurora-postgresql")
-    error_message = "Please specify the database engine (engine). Possible values: `aurora`, `aurora-postgresql`, `aurora-mysql`"
+    error_message = "Please specify the database engine (engine). Possible values: `aurora`, `aurora-postgresql`, `aurora-mysql`."
   }
 }
 
 variable "engine_version" {
   description = "Versão da engine utilizada"
   type        = string
-  default     = null
   validation {
     condition     = var.engine_version != null
     error_message = "Please specify the database engine version (engine_version)."
@@ -73,19 +74,16 @@ variable "publicly_accessible" {
 variable "db_subnet_group_name" {
   description = "Nome do subnetgroup que será atribuido à instância"
   type        = string
-  default     = null
 }
 
 variable "db_parameter_group_name" {
   description = "Nome do parameter group que será criado caso `create_parameter_group`  seja `true` para a instância. Senão, tentará usar um parameter group com esse nome"
   type        = string
-  default     = null 
 }
 
 variable "parameter_group_family" {
   description = "Family do parameter group. Utilizar o data source `aws_rds_engine_version` para ter uma precisão melhor."
   type        = string
-  default     = null 
   validation {
     condition       = var.parameter_group_family != null
     error_message   = "Please specify the parameter group family (paramter_group_family)."
@@ -126,7 +124,7 @@ variable "preferred_backup_window" {
   description = "Janela de backup. Determinar hora em UTC. Ex.: `04:00-06:00` LEMBRANDO QUE É UTC!!!"
   type        = string
 #   default     = "04:00-05:00"
-  default     = null 
+  default     = null
 }
 
 variable "preferred_maintenance_window" {
@@ -177,12 +175,12 @@ variable "instance_count" {
   default     = 1 
 }
 
-variable "instance_scope" {
-  description = "Especificar o propósito das instâncias. Exemplos: `app`, `cdc`, `extraction`, etc..."
-  type        = string
-  default     = null
-  validation {
-    condition     = var.instance_scope != null
-    error_message = "Please specify the scope of the instances (instance_scope)."   
-  } 
-}
+# variable "instance_scope" {
+#   description = "Especificar o propósito das instâncias. Exemplos: `app`, `cdc`, `extraction`, etc..."
+#   type        = string
+#   default     = null
+#   validation {
+#     condition     = var.instance_scope != null
+#     error_message = "Please specify the scope of the instances (instance_scope)."   
+#   } 
+# }

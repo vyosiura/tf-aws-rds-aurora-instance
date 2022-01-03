@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Required variables are now required:
-    - Variable `cluster_identifier`, `engine`, `engine_version`, `db_subnet_group_name`, `parameter_group_family` is now required
+    - Variable `cluster_identifier`, `engine`, `engine_version`, `db_subnet_group_name`, `parameter_group_family`, `parameter_group_name` is now required
 
 ### Removed
 - Removed DNS record creation in Route53

@@ -46,7 +46,7 @@ variable "engine" {
   type        = string
   validation {
     condition     = var.engine != null && (var.engine == "aurora-mysql" || var.engine == "aurora" || var.engine == "aurora-postgresql")
-    error_message = "Please specify the database engine (engine). Possible values: `aurora`, `aurora-postgresql`, `aurora-mysql`"
+    error_message = "Please specify the database engine (engine). Possible values: `aurora`, `aurora-postgresql`, `aurora-mysql`."
   }
 }
 
@@ -79,7 +79,6 @@ variable "db_subnet_group_name" {
 variable "db_parameter_group_name" {
   description = "Nome do parameter group que será criado caso `create_parameter_group`  seja `true` para a instância. Senão, tentará usar um parameter group com esse nome"
   type        = string
-  default     = null 
 }
 
 variable "parameter_group_family" {
